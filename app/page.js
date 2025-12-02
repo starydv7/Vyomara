@@ -29,7 +29,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen">
-        {/* Hero Section */}
+      {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-rose-50/60 via-white to-white dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAzNGMyIDIgNS4wNzQgMiA3LjA3NCAwIDItMiAyLTUuMDc0IDItNy4wNzQgMC0yLTIuMDc0LTIuMDc0LTUgMC03LjA3NCAyLTIgNS4wNzQtMiA3LjA3NCAwIDIgMi4wNzQgMiA1IDAgNy4wNzR6IiBmaWxsPSIjZmM5ODg3IiBmaWxsLW9wYWNpdHk9IjAuMDMiLz48L2c+PC9zdmc+')] opacity-40 dark:opacity-10"></div>
@@ -54,8 +54,8 @@ export default function Home() {
               <br />
               <span className="bg-gradient-to-r from-rose-500 to-orange-400 bg-clip-text text-transparent">
                 One Step at a Time
-            </span>
-          </h1>
+              </span>
+            </h1>
 
             {/* Subheadline */}
             <p className="mx-auto mb-8 max-w-2xl text-lg text-slate-600 dark:text-slate-300 sm:text-xl">
@@ -284,7 +284,7 @@ export default function Home() {
               }
               title="Car Rental"
               count="500+"
-              href="/vendors?category=Car Rental"
+              href="/rentals"
             />
             <CategoryCard
               icon={
@@ -580,41 +580,41 @@ export default function Home() {
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600 dark:text-slate-300">
               From planning to execution, we've got you covered at every step of your wedding journey.
-          </p>
-        </div>
+            </p>
+          </div>
 
           <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          <FeatureCard
+            <FeatureCard
               icon="🎯"
               title="Verified Vendors Only"
               description="All vendors are background-checked and verified for quality and reliability."
-          />
-          <FeatureCard
+            />
+            <FeatureCard
               icon="💰"
               title="Budget Management"
               description="Track expenses, set budgets, and get real-time insights into your wedding spending."
-          />
-          <FeatureCard
+            />
+            <FeatureCard
               icon="📅"
               title="Smart Timeline"
               description="Personalized checklists and timelines based on your wedding date and preferences."
-          />
-          <FeatureCard
+            />
+            <FeatureCard
               icon="🔒"
               title="Secure Bookings"
               description="Safe and secure payment processing with booking confirmations and receipts."
-          />
-          <FeatureCard
+            />
+            <FeatureCard
               icon="💬"
               title="24/7 Support"
               description="Get help whenever you need it with our round-the-clock customer support team."
-          />
-          <FeatureCard
+            />
+            <FeatureCard
               icon="⭐"
               title="Real Reviews"
               description="Read authentic reviews from real couples who've worked with our vendors."
-          />
-        </div>
+            />
+          </div>
         </div>
       </section>
 

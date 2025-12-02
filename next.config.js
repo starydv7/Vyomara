@@ -1,12 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // React Compiler (Next.js 15)
-  reactCompiler: true,
-
   // Production optimizations
-  swcMinify: true,
   compress: true,
-  
+
   // Image optimization
   images: {
     formats: ['image/avif', 'image/webp'],
@@ -17,7 +13,7 @@ const nextConfig = {
 
   // Performance optimizations
   poweredByHeader: false,
-  
+
   // Headers for security
   async headers() {
     return [

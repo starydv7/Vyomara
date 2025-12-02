@@ -67,7 +67,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
-      <body className="antialiased bg-white text-slate-900 dark:bg-slate-950 dark:text-white">
+      <body className="antialiased bg-white text-slate-900 dark:bg-slate-950 dark:text-white" suppressHydrationWarning={true}>
         <Navbar />
         <div id="root">{children}</div>
       </body>

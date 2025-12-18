@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Button from '../ui/Button';
+import { SignInButton, SignUpButton, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import LocationSelector from './LocationSelector';
 
 const navLinks = [
@@ -11,55 +12,13 @@ const navLinks = [
   { label: 'Packages', href: '#packages' },
 ];
 
-const authOptions = [
-  {
-    label: 'Login',
-    href: '/login',
-    icon: (
-      <svg
-        className="h-4 w-4"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-        <polyline points="10 17 15 12 10 7" />
-        <line x1="15" y1="12" x2="3" y2="12" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Sign Up',
-    href: '/signup',
-    icon: (
-      <svg
-        className="h-4 w-4"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <circle cx="12" cy="8" r="4" />
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-        <line x1="12" y1="12" x2="12" y2="21" />
-        <line x1="9" y1="18" x2="15" y2="18" />
-      </svg>
-    ),
-  },
-];
+
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const searchRef = useRef(null);
-  const authRef = useRef(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -82,25 +41,7 @@ export default function Navbar() {
     };
   }, [isSearchOpen]);
 
-  useEffect(() => {
-    if (!isAuthOpen) return;
-    const handleClickOutside = (event) => {
-      if (authRef.current && !authRef.current.contains(event.target)) {
-        setIsAuthOpen(false);
-      }
-    };
-    const handleEscape = (event) => {
-      if (event.key === 'Escape') {
-        setIsAuthOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleEscape);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscape);
-    };
-  }, [isAuthOpen]);
+
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -204,43 +145,38 @@ export default function Navbar() {
                 </div>
               )}
             </div>
-            <div className="relative" ref={authRef}>
-              <button
-                type="button"
-                onClick={() => setIsAuthOpen((prev) => !prev)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-rose-100 bg-white/70 text-rose-500 shadow-sm shadow-rose-50 transition hover:border-rose-200 hover:bg-white dark:border-rose-500/30 dark:bg-slate-900/60 dark:text-rose-200"
-                aria-label="Login or Sign Up"
-              >
-                <svg
-                  className="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+            <div className="relative flex items-center gap-4">
+              <SignedOut>
+                <SignInButton>
+                  <button className="text-sm font-semibold text-slate-600 transition hover:text-rose-500 dark:text-slate-200">
+                    Login
+                  </button>
+                </SignInButton>
+                <SignUpButton>
+                  <button className="rounded-full bg-rose-500 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-rose-200/50 transition hover:bg-rose-600 dark:shadow-none">
+                    Sign Up
+                  </button>
+                </SignUpButton>
+              </SignedOut>
+              <SignedIn>
+                <Link
+                  href="/profile"
+                  className="text-sm font-semibold text-slate-600 transition hover:text-rose-500 dark:text-slate-200 mr-4"
                 >
-                  <circle cx="12" cy="8" r="4" />
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                </svg>
-              </button>
-              {isAuthOpen && (
-                <div className="absolute right-0 top-full mt-2 w-48 rounded-2xl border border-slate-200 bg-white/95 p-2 shadow-xl backdrop-blur-md dark:border-slate-700 dark:bg-slate-950/95">
-                  <div className="space-y-1">
-                    {authOptions.map((option) => (
-                      <Link
-                        key={option.label}
-                        href={option.href}
-                        className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-rose-50 hover:text-rose-600 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-rose-400"
-                        onClick={() => setIsAuthOpen(false)}
-                      >
-                        {option.icon}
-                        <span>{option.label}</span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
+                  Dashboard
+                </Link>
+                <UserButton
+                  afterSignOutUrl="/"
+                  userProfileMode="navigation"
+                  userProfileUrl="/profile"
+                  appearance={{
+                    elements: {
+                      userButtonPopoverCard: "shadow-xl",
+                      userButtonPopoverFooter: "hidden"
+                    }
+                  }}
+                />
+              </SignedIn>
             </div>
             <Button className="whitespace-nowrap bg-gradient-to-r from-rose-500 to-orange-400 text-white shadow-lg shadow-rose-200/60 hover:opacity-90">
               Plan My Wedding
@@ -335,46 +271,38 @@ export default function Navbar() {
                 </div>
               )}
             </div>
-            <div className="space-y-2 pt-4">
-              <button
-                type="button"
-                onClick={() => setIsAuthOpen((prev) => !prev)}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl border border-rose-100 bg-white/80 px-4 py-2.5 text-sm font-semibold text-rose-600 shadow-sm shadow-rose-50 transition hover:border-rose-200 hover:bg-white dark:border-rose-500/30 dark:bg-slate-900/60 dark:text-rose-100"
-              >
-                <svg
-                  className="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="12" cy="8" r="4" />
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                </svg>
-                <span>Login / Sign Up</span>
-              </button>
-              {isAuthOpen && (
-                <div className="rounded-2xl border border-slate-200 bg-white/80 p-2 shadow-lg dark:border-slate-700 dark:bg-slate-900/60">
-                  <div className="space-y-1">
-                    {authOptions.map((option) => (
-                      <Link
-                        key={option.label}
-                        href={option.href}
-                        className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-rose-50 hover:text-rose-600 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-rose-400"
-                        onClick={() => {
-                          setIsAuthOpen(false);
-                          setIsOpen(false);
-                        }}
-                      >
-                        {option.icon}
-                        <span>{option.label}</span>
-                      </Link>
-                    ))}
+            <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-slate-800">
+              <SignedOut>
+                <SignInButton>
+                  <button className="flex w-full items-center justify-center gap-2 rounded-2xl border border-rose-100 bg-white/80 px-4 py-2.5 text-sm font-semibold text-rose-600 shadow-sm shadow-rose-50 transition hover:border-rose-200 hover:bg-white dark:border-rose-500/30 dark:bg-slate-900/60 dark:text-rose-100">
+                    Login
+                  </button>
+                </SignInButton>
+                <SignUpButton>
+                  <button className="flex w-full items-center justify-center gap-2 rounded-2xl bg-rose-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-rose-200/50 transition hover:bg-rose-600 dark:shadow-none">
+                    Sign Up
+                  </button>
+                </SignUpButton>
+              </SignedOut>
+              <SignedIn>
+                <div className="flex flex-col gap-4">
+                  <Link
+                    href="/profile"
+                    className="flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white/80 px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-200"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    My Dashboard
+                  </Link>
+                  <div className="flex items-center justify-between px-2">
+                    <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Account Settings</span>
+                    <UserButton
+                      afterSignOutUrl="/"
+                      userProfileMode="navigation"
+                      userProfileUrl="/profile"
+                    />
                   </div>
                 </div>
-              )}
+              </SignedIn>
             </div>
           </div>
           <LocationSelector className="mt-6" />

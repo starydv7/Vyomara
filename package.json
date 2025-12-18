@@ -17,6 +17,7 @@
     "analyze": "cross-env ANALYZE=true next build"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.35.6",
     "next": "^15.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

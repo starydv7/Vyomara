@@ -1,4 +1,5 @@
 import { Inter } from 'next/font/google';
+import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
 import Navbar from '../components/layout/Navbar';
 
@@ -66,12 +67,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
-      <body className="antialiased bg-white text-slate-900 dark:bg-slate-950 dark:text-white" suppressHydrationWarning={true}>
-        <Navbar />
-        <div id="root">{children}</div>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" className={inter.variable} suppressHydrationWarning>
+        <body className="antialiased bg-white text-slate-900 dark:bg-slate-950 dark:text-white" suppressHydrationWarning={true}>
+          <Navbar />
+          <div id="root">{children}</div>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
 

@@ -1,0 +1,128 @@
+export const vendors = [
+    {
+        id: 'royal-orchid',
+        name: "Royal Orchid Banquets",
+        category: "Venue",
+        location: "Mumbai, Maharashtra",
+        rating: 4.9,
+        reviews: 1247,
+        priceRange: "₹2L - ₹8L",
+        verified: true,
+        featured: true,
+        badge: "Top Rated",
+        image: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&h=300&fit=crop"
+    },
+    {
+        id: 'dream-lens',
+        name: "Dream Lens Photography",
+        category: "Photography",
+        location: "Delhi NCR",
+        rating: 4.8,
+        reviews: 892,
+        priceRange: "₹50K - ₹3L",
+        verified: true,
+        featured: true,
+        badge: "Featured",
+        image: "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=400&h=300&fit=crop"
+    },
+    {
+        id: 'blossom-decor',
+        name: "Blossom Decor Studio",
+        category: "Decoration",
+        location: "Bangalore, Karnataka",
+        rating: 4.9,
+        reviews: 1156,
+        priceRange: "₹1.5L - ₹6L",
+        verified: true,
+        featured: true,
+        badge: "Vendor of Month",
+        image: "https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=400&h=300&fit=crop"
+    },
+    {
+        id: 'gourmet-catering',
+        name: "Gourmet Catering Co.",
+        category: "Catering",
+        location: "Pune, Maharashtra",
+        rating: 4.7,
+        reviews: 634,
+        priceRange: "₹80K - ₹4L",
+        verified: true,
+        featured: false,
+        image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400&h=300&fit=crop"
+    },
+    {
+        id: 'bridal-beauty',
+        name: "Bridal Beauty Studio",
+        category: "Makeup Artist",
+        location: "Jaipur, Rajasthan",
+        rating: 4.9,
+        reviews: 523,
+        priceRange: "₹25K - ₹1.5L",
+        verified: true,
+        featured: true,
+        badge: "Top Rated",
+        image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop"
+    },
+    {
+        id: 'melody-dj',
+        name: "Melody DJ Services",
+        category: "DJ & Music",
+        location: "Hyderabad, Telangana",
+        rating: 4.6,
+        reviews: 445,
+        priceRange: "₹30K - ₹1.2L",
+        verified: true,
+        featured: false,
+        image: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=400&h=300&fit=crop"
+    },
+    {
+        id: 'mehendi-magic',
+        name: "Mehendi Magic",
+        category: "Mehendi Artist",
+        location: "Ahmedabad, Gujarat",
+        rating: 4.8,
+        reviews: 678,
+        priceRange: "₹15K - ₹80K",
+        verified: true,
+        featured: true,
+        image: "https://images.unsplash.com/photo-1519162808019-7de1683fa2ad?w=400&h=300&fit=crop"
+    },
+    {
+        id: 'luxury-rentals',
+        name: "Luxury Car Rentals",
+        category: "Car Rental",
+        location: "Chandigarh, Punjab",
+        rating: 4.7,
+        reviews: 389,
+        priceRange: "₹20K - ₹1L",
+        verified: true,
+        featured: false,
+        image: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&h=300&fit=crop"
+    },
+    // Additional Mock Data
+    {
+        id: 'grand-palace',
+        name: "The Grand Palace",
+        category: "Venue",
+        location: "Udaipur, Rajasthan",
+        rating: 5.0,
+        reviews: 2100,
+        priceRange: "₹15L - ₹50L",
+        verified: true,
+        featured: true,
+        badge: "Luxury",
+        image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop"
+    },
+    {
+        id: 'lens-magic',
+        name: "Lens Magic Studios",
+        category: "Photography",
+        location: "Mumbai, Maharashtra",
+        rating: 4.5,
+        reviews: 340,
+        priceRange: "₹1L - ₹4L",
+        verified: true,
+        featured: false,
+        image: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=400&h=300&fit=crop"
+    }
+];

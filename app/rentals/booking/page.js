@@ -60,8 +60,8 @@ function BookingContent() {
         }
 
         // Here you would typically send data to backend
-        alert(`Booking Confirmed! \nVehicle: ${selectedVehicle.name}\nFor: ${bookingFor}\nTotal: ₹${selectedVehicle.estimatedPrice}`);
-        router.push('/'); // Redirect to home or success page
+        const bookingId = `BK-${Math.floor(Math.random() * 10000)}`;
+        router.push(`/booking-success?id=${bookingId}`);
     };
 
     return (

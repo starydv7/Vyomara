@@ -96,9 +96,9 @@ export default function ProfilePage() {
                         </div>
                     </div>
                     <div className="flex gap-3">
-                        <button className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 font-medium hover:bg-slate-50 transition dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                        <Link href="/profile/edit" className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 font-medium hover:bg-slate-50 transition dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
                             Edit Profile
-                        </button>
+                        </Link>
                     </div>
                 </div>
 
@@ -138,8 +138,8 @@ export default function ProfilePage() {
                                     />
                                     <div className="absolute top-3 left-3">
                                         <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${booking.status === 'Confirmed' ? 'bg-green-500 text-white' :
-                                                booking.status === 'Pending' ? 'bg-amber-500 text-white' :
-                                                    'bg-slate-500 text-white'
+                                            booking.status === 'Pending' ? 'bg-amber-500 text-white' :
+                                                'bg-slate-500 text-white'
                                             }`}>
                                             {booking.status}
                                         </span>
@@ -174,8 +174,8 @@ export default function ProfilePage() {
                                                 <div>
                                                     <p className="text-xs text-slate-400">Payment Status</p>
                                                     <p className={`font-medium ${booking.paymentStatus === 'Fully Paid' ? 'text-green-600' :
-                                                            booking.paymentStatus === 'Advance Paid' ? 'text-blue-600' :
-                                                                'text-amber-600'
+                                                        booking.paymentStatus === 'Advance Paid' ? 'text-blue-600' :
+                                                            'text-amber-600'
                                                         }`}>
                                                         {booking.paymentStatus}
                                                         {booking.paymentStatus !== 'Fully Paid' && booking.paymentStatus !== 'Pending' &&

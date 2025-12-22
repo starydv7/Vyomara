@@ -4,6 +4,7 @@ import { use } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { vehicles } from '@/data/vehicles';
+import AvailabilityCalendar from '@/components/AvailabilityCalendar';
 
 export default function VehicleDetailPage({ params }) {
     const router = useRouter();
@@ -114,6 +115,47 @@ export default function VehicleDetailPage({ params }) {
                             ) : (
                                 <p className="text-slate-500 italic">No reviews yet for this vehicle.</p>
                             )}
+                        </div>
+                        {/* Availability Calendar */}
+                        <AvailabilityCalendar />
+
+                        {/* Stats & Interior */}
+                        <div className="grid sm:grid-cols-2 gap-6">
+                            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+                                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Vehicle Stats</h3>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-slate-500">Total Trips</span>
+                                        <span className="font-semibold text-slate-900 dark:text-white">142</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-slate-500">Avg. Rating</span>
+                                        <span className="font-semibold text-slate-900 dark:text-white">{vehicle.reviews.length > 0 ? '4.8/5.0' : 'New'}</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-slate-500">Maintenance</span>
+                                        <span className="font-semibold text-green-600">Excellent</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
+                                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Interior</h3>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-slate-500">Upholstery</span>
+                                        <span className="font-semibold text-slate-900 dark:text-white">Premium Leather</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-slate-500">Legroom</span>
+                                        <span className="font-semibold text-slate-900 dark:text-white">Spacious</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-slate-500">Ambient Light</span>
+                                        <span className="font-semibold text-slate-900 dark:text-white">Yes (RGB)</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

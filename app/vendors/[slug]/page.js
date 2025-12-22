@@ -9,9 +9,9 @@ export default function VendorDetailsPage() {
   const params = useParams();
   const slug = params.slug;
 
-  // Find vendor by slug (matching the name logic used in VendorCard)
+  // Find vendor by ID or slug
   const vendor = vendors.find(v =>
-    v.name.toLowerCase().replace(/\s+/g, '-') === slug
+    v.id === slug || v.name.toLowerCase().replace(/\s+/g, '-') === slug
   );
 
   if (!vendor) {
@@ -108,7 +108,13 @@ export default function VendorDetailsPage() {
               <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Interested?</h3>
 
               <div className="space-y-4">
-                <button className="w-full py-4 rounded-xl bg-gradient-to-r from-rose-500 to-orange-400 text-white font-bold shadow-lg shadow-rose-200/50 hover:opacity-95 transition dark:shadow-none">
+                <button
+                  onClick={() => {
+                    const quoteId = `QT-${Math.floor(Math.random() * 10000)}`;
+                    window.location.href = `/booking-success?id=${quoteId}&type=quote`;
+                  }}
+                  className="w-full py-4 rounded-xl bg-gradient-to-r from-rose-500 to-orange-400 text-white font-bold shadow-lg shadow-rose-200/50 hover:opacity-95 transition dark:shadow-none"
+                >
                   Request Quote
                 </button>
                 <button className="w-full py-4 rounded-xl border-2 border-slate-200 text-slate-700 font-bold hover:bg-slate-50 transition dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">

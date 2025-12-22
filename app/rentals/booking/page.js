@@ -54,7 +54,7 @@ function BookingContent() {
     }));
 
     const handleBookNow = () => {
-        console.log('Booking initiated', selectedVehicle);
+
         if (!selectedVehicle) {
             alert('Please select a vehicle first');
             return;
@@ -62,7 +62,7 @@ function BookingContent() {
 
         // Here you would typically send data to backend
         const bookingId = `BK-${Math.floor(Math.random() * 10000)}`;
-        console.log('Redirecting to success page with ID:', bookingId);
+
         router.push(`/booking-success?id=${bookingId}`);
     };
 
@@ -159,8 +159,7 @@ function BookingContent() {
 
                             <button
                                 onClick={handleBookNow}
-                                disabled={!selectedVehicle}
-                                className="w-full rounded-xl bg-gradient-to-r from-rose-500 to-orange-400 py-4 text-sm font-bold text-white shadow-lg shadow-rose-200/50 transition hover:opacity-95 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed dark:shadow-none"
+                                className="w-full rounded-xl bg-gradient-to-r from-rose-500 to-orange-400 py-4 text-sm font-bold text-white shadow-lg shadow-rose-200/50 transition hover:opacity-95 hover:shadow-xl dark:shadow-none"
                             >
                                 Confirm Booking
                             </button>

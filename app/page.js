@@ -465,6 +465,7 @@ export default function Home() {
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <VendorCard
+              id="royal-orchid"
               image="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&h=300&fit=crop"
               name="Royal Orchid Banquets"
               category="Venue"
@@ -477,6 +478,7 @@ export default function Home() {
               badge="Top Rated"
             />
             <VendorCard
+              id="dream-lens"
               image="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=400&h=300&fit=crop"
               name="Dream Lens Photography"
               category="Photography"

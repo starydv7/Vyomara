@@ -14,6 +14,9 @@ function BookingSuccessContent() {
         setBookingId(id);
     }, [searchParams]);
 
+    const type = searchParams.get('type');
+    const isQuote = type === 'quote';
+
     return (
         <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12 dark:bg-slate-950 sm:px-6 lg:px-8">
             <div className="w-full max-w-md text-center">
@@ -28,13 +31,19 @@ function BookingSuccessContent() {
                     </svg>
                 </div>
 
-                <h1 className="mb-2 text-3xl font-bold text-slate-900 dark:text-white">Booking Confirmed!</h1>
+                <h1 className="mb-2 text-3xl font-bold text-slate-900 dark:text-white">
+                    {isQuote ? 'Quote Requested!' : 'Booking Confirmed!'}
+                </h1>
                 <p className="mb-8 text-slate-600 dark:text-slate-400">
-                    Thank you for your booking. We have sent a confirmation email to your registered address.
+                    {isQuote
+                        ? 'Your request has been sent to the vendor. They will contact you shortly.'
+                        : 'Thank you for your booking. We have sent a confirmation email to your registered address.'}
                 </p>
 
                 <div className="mb-8 rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-900">
-                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Booking Reference</p>
+                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        {isQuote ? 'Request Reference' : 'Booking Reference'}
+                    </p>
                     <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{bookingId}</p>
                 </div>
 

@@ -1,0 +1,127 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id // Clerk ID
+  email     String    @unique
+  name      String?
+  role      String    @default("USER") // USER, VENDOR, ADMIN
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  bookings  Booking[]
+  reviews   Review[]
+}
+
+model Vendor {
+  id          String    @id // Matches user's _id (e.g., venue_hotel_select_siwan)
+  type        String    @default("venue")
+  status      String    @default("active")
+  verified    Boolean   @default(false)
+  
+  // Core
+  name        String
+  displayName String?
+  brand       String?
+  categories  String    // JSON string: ["Marriage Hall", "Banquet Hall"...]
+  rating      Float     @default(0)
+  reviewsCount Int      @default(0)
+  
+  // Address
+  fullAddress String?
+  street      String?
+  locality    String?
+  city        String
+  state       String
+  pincode     String?
+  country     String    @default("India")
+  
+  // Geo
+  latitude    Float?
+  longitude   Float?
+  googleMapsUrl String?
+
+  // Contact
+  phonePrimary String?
+  phoneSecondary String?
+  email       String?
+  website     String?
+
+  // Features & Search (Stored as JSON strings for flexibility in SQLite)
+  features    String?   // JSON: { event_types: [], facilities: [] }
+  searchData  String?   // JSON: { keywords: [], aliases: [], multilingual: {} }
+  
+  // Media
+  coverImage  String?
+  gallery     String?   // JSON: ["url1", "url2"]
+  
+  // Legacy/Simple fields (kept for compatibility if needed, or mapped)
+  slug        String    @unique
+  priceRange  String?
+  description String?
+  featured    Boolean   @default(false)
+  badge       String?
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  bookings    Booking[]
+  reviews     Review[]
+}
+
+model Vehicle {
+  id              String    @id @default(cuid())
+  name            String
+  category        String
+  type            String
+  capacity        Int
+  pricePerKm      Float
+  fullDayRate     Float
+  driverAllowance Float
+  image           String
+  description     String?
+  features        String // JSON string
+  rating          Float     @default(0)
+  reviewsCount    Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  bookings        Booking[]
+  reviews         Review[]
+}
+
+model Booking {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  vendorId    String?
+  vendor      Vendor?  @relation(fields: [vendorId], references: [id])
+  vehicleId   String?
+  vehicle     Vehicle? @relation(fields: [vehicleId], references: [id])
+  startDate   DateTime
+  endDate     DateTime
+  status      String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED, COMPLETED
+  totalAmount Float
+  type        String   // RENTAL, SERVICE
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  vendorId  String?
+  vendor    Vendor?  @relation(fields: [vendorId], references: [id])
+  vehicleId String?
+  vehicle   Vehicle? @relation(fields: [vehicleId], references: [id])
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+}

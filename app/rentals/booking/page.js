@@ -53,17 +53,38 @@ function BookingContent() {
         estimatedPrice: v.pricePerKm * tripDetails.distance * (tripDetails.tripType === 'round-trip' ? 2 : 1)
     }));
 
-    const handleBookNow = () => {
-
+    const handleBookNow = async () => {
         if (!selectedVehicle) {
             alert('Please select a vehicle first');
             return;
         }
 
-        // Here you would typically send data to backend
-        const bookingId = `BK-${Math.floor(Math.random() * 10000)}`;
+        try {
+            const res = await fetch('/api/bookings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId: 'user_123', // Mock user ID for now
+                    vehicleId: selectedVehicle.id,
+                    startDate: tripDetails.date || new Date().toISOString(),
+                    endDate: tripDetails.date || new Date().toISOString(), // Same day for now
+                    totalAmount: selectedVehicle.estimatedPrice + 500 + (keepBuffer ? 1000 : 0),
+                    type: 'RENTAL'
+                }),
+            });
 
-        router.push(`/booking-success?id=${bookingId}`);
+            if (!res.ok) {
+                throw new Error('Booking failed');
+            }
+
+            const booking = await res.json();
+            router.push(`/booking-success?id=${booking.id}`);
+        } catch (error) {
+            console.error('Booking error:', error);
+            alert('Failed to create booking. Please try again.');
+        }
     };
 
     return (

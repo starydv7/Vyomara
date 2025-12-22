@@ -5,11 +5,49 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { vehicles } from '@/data/vehicles';
 import AvailabilityCalendar from '@/components/AvailabilityCalendar';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { useParams, notFound } from 'next/navigation';
 
 export default function VehicleDetailPage({ params }) {
     const router = useRouter();
-    const resolvedParams = use(params);
-    const vehicle = vehicles.find(v => v.id === resolvedParams.id);
+    // Handle both direct params prop (Next.js 13/14 server component style passed to client) 
+    // and useParams hook (client component style)
+    const resolvedParams = params ? use(params) : useParams();
+    const id = resolvedParams?.id;
+
+    const [vehicle, setVehicle] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchVehicle() {
+            if (!id) return;
+            try {
+                const res = await fetch(`/api/vehicles/${id}`);
+                if (!res.ok) {
+                    if (res.status === 404) notFound();
+                    throw new Error('Failed to fetch');
+                }
+                const data = await res.json();
+                setVehicle(data);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchVehicle();
+    }, [id]);
+
+    const handleBookNow = () => {
+        if (vehicle) {
+            router.push(`/rentals/booking?vehicleId=${vehicle.id}`);
+        }
+    };
+
+    if (loading) {
+        return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    }
 
     if (!vehicle) {
         return (
@@ -23,12 +61,6 @@ export default function VehicleDetailPage({ params }) {
             </div>
         );
     }
-
-    const handleBookNow = () => {
-        // Redirect to booking page with vehicle pre-selected (via query param or similar mechanism)
-        // For now, we'll just go to the booking page. In a real app, we'd pass the ID.
-        router.push(`/rentals/booking?vehicleId=${vehicle.id}`);
-    };
 
     return (
         <main className="min-h-screen bg-white dark:bg-slate-950 pb-20">
@@ -46,7 +78,7 @@ export default function VehicleDetailPage({ params }) {
                             {vehicle.category}
                         </span>
                         <h1 className="text-4xl md:text-5xl font-bold mb-2">{vehicle.name}</h1>
-                        <p className="text-lg text-slate-200">{vehicle.tag}</p>
+                        <p className="text-lg text-slate-200">{vehicle.tag || 'Luxury Rental'}</p>
                     </div>
                 </div>
             </div>
@@ -76,122 +108,85 @@ export default function VehicleDetailPage({ params }) {
                             </div>
                         </div>
 
-                        {/* Gallery Grid (Placeholder for 10 photos) */}
-                        <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 shadow-sm border border-slate-100 dark:border-slate-800">
-                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">Photo Gallery</h2>
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                {/* Just repeating the main image for demo, in real app use vehicle.images */}
-                                {[...Array(6)].map((_, i) => (
-                                    <div key={i} className="aspect-square rounded-xl overflow-hidden bg-slate-100">
-                                        <img
-                                            src={vehicle.images[i % vehicle.images.length] || vehicle.image}
-                                            alt={`Gallery ${i}`}
-                                            className="h-full w-full object-cover hover:scale-110 transition duration-500"
-                                        />
-                                    </div>
-                                ))}
+                        {/* Vehicle Stats */}
+                        <div className="grid sm:grid-cols-3 gap-4">
+                            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 text-center">
+                                <p className="text-3xl font-bold text-slate-900 dark:text-white">{vehicle.reviewsCount || 0}</p>
+                                <p className="text-sm text-slate-500">Total Trips</p>
+                            </div>
+                            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 text-center">
+                                <p className="text-3xl font-bold text-slate-900 dark:text-white">{vehicle.rating || 0}</p>
+                                <p className="text-sm text-slate-500">Avg. Rating</p>
+                            </div>
+                            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 text-center">
+                                <p className="text-3xl font-bold text-slate-900 dark:text-white">Excellent</p>
+                                <p className="text-sm text-slate-500">Maintenance</p>
                             </div>
                         </div>
 
-                        {/* Reviews */}
-                        <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 shadow-sm border border-slate-100 dark:border-slate-800">
-                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">Client Reviews</h2>
-                            {vehicle.reviews.length > 0 ? (
-                                <div className="space-y-6">
-                                    {vehicle.reviews.map((review, idx) => (
-                                        <div key={idx} className="border-b border-slate-100 dark:border-slate-800 last:border-0 pb-6 last:pb-0">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <h4 className="font-bold text-slate-900 dark:text-white">{review.user}</h4>
-                                                <div className="flex text-amber-400 text-sm">
-                                                    {[...Array(5)].map((_, i) => (
-                                                        <span key={i}>{i < review.rating ? '★' : '☆'}</span>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                            <p className="text-slate-600 dark:text-slate-400 text-sm">{review.comment}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <p className="text-slate-500 italic">No reviews yet for this vehicle.</p>
-                            )}
-                        </div>
                         {/* Availability Calendar */}
-                        <AvailabilityCalendar />
+                        <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 shadow-sm border border-slate-100 dark:border-slate-800">
+                            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Availability</h2>
+                            <AvailabilityCalendar vehicleId={vehicle.id} />
+                        </div>
 
-                        {/* Stats & Interior */}
-                        <div className="grid sm:grid-cols-2 gap-6">
-                            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-                                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Vehicle Stats</h3>
-                                <div className="space-y-3">
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500">Total Trips</span>
-                                        <span className="font-semibold text-slate-900 dark:text-white">142</span>
-                                    </div>
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500">Avg. Rating</span>
-                                        <span className="font-semibold text-slate-900 dark:text-white">{vehicle.reviews.length > 0 ? '4.8/5.0' : 'New'}</span>
-                                    </div>
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500">Maintenance</span>
-                                        <span className="font-semibold text-green-600">Excellent</span>
-                                    </div>
+                        {/* Interior Details (Mock) */}
+                        <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 shadow-sm border border-slate-100 dark:border-slate-800">
+                            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Interior & Comfort</h2>
+                            <div className="grid sm:grid-cols-2 gap-6">
+                                <div>
+                                    <p className="text-sm text-slate-500 mb-1">Upholstery</p>
+                                    <p className="font-medium">Premium Leather (Tan)</p>
                                 </div>
-                            </div>
-
-                            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800">
-                                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Interior</h3>
-                                <div className="space-y-3">
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500">Upholstery</span>
-                                        <span className="font-semibold text-slate-900 dark:text-white">Premium Leather</span>
-                                    </div>
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500">Legroom</span>
-                                        <span className="font-semibold text-slate-900 dark:text-white">Spacious</span>
-                                    </div>
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500">Ambient Light</span>
-                                        <span className="font-semibold text-slate-900 dark:text-white">Yes (RGB)</span>
-                                    </div>
+                                <div>
+                                    <p className="text-sm text-slate-500 mb-1">Legroom</p>
+                                    <p className="font-medium">Extended (Business Class)</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-slate-500 mb-1">Climate Control</p>
+                                    <p className="font-medium">4-Zone Automatic</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-slate-500 mb-1">Ambient Lighting</p>
+                                    <p className="font-medium">64 Colors</p>
                                 </div>
                             </div>
                         </div>
+
                     </div>
 
-                    {/* Sidebar Pricing */}
+                    {/* Right Column: Booking Card */}
                     <div className="space-y-6">
-                        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-lg border border-slate-200 dark:border-slate-700 sticky top-24">
-                            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Pricing Details</h3>
+                        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-lg border border-slate-200 dark:border-slate-700 sticky top-6">
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Booking Summary</h3>
 
-                            <div className="space-y-4 mb-8">
-                                <div className="flex justify-between items-center p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
-                                    <span className="text-slate-600 dark:text-slate-400">Price per Km</span>
-                                    <span className="font-bold text-lg text-slate-900 dark:text-white">₹{vehicle.pricePerKm}</span>
+                            <div className="space-y-4 mb-6">
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-slate-500">Full Day Rate (8hrs)</span>
+                                    <span className="font-medium text-slate-900 dark:text-white">₹{vehicle.fullDayRate}</span>
                                 </div>
-                                <div className="flex justify-between items-center p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
-                                    <span className="text-slate-600 dark:text-slate-400">Full Day (8hr/80km)</span>
-                                    <span className="font-bold text-lg text-slate-900 dark:text-white">₹{vehicle.fullDayRate}</span>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-slate-500">Driver Allowance</span>
+                                    <span className="font-medium text-slate-900 dark:text-white">₹{vehicle.driverAllowance}</span>
                                 </div>
-                                <div className="flex justify-between items-center p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
-                                    <span className="text-slate-600 dark:text-slate-400">Driver Allowance</span>
-                                    <span className="font-bold text-lg text-slate-900 dark:text-white">₹{vehicle.driverAllowance}</span>
+                                <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                                    <span className="font-bold text-slate-900 dark:text-white">Total (Est.)</span>
+                                    <span className="text-xl font-bold text-rose-600">₹{vehicle.fullDayRate + vehicle.driverAllowance}</span>
                                 </div>
                             </div>
 
                             <button
                                 onClick={handleBookNow}
-                                className="w-full rounded-xl bg-gradient-to-r from-rose-500 to-orange-400 py-4 text-base font-bold text-white shadow-lg shadow-rose-200/50 transition hover:opacity-95 hover:shadow-xl dark:shadow-none"
+                                className="w-full py-4 rounded-xl bg-gradient-to-r from-rose-500 to-orange-400 text-white font-bold shadow-lg shadow-rose-200/50 hover:opacity-95 transition dark:shadow-none"
                             >
                                 Book This Vehicle
                             </button>
 
                             <p className="text-xs text-center text-slate-500 mt-4">
-                                *Final price depends on total distance and duration.
+                                Free cancellation up to 24 hours before trip
                             </p>
                         </div>
                     </div>
-
                 </div>
             </div>
         </main>

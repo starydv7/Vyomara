@@ -8,6 +8,8 @@ const vendors = [
         type: 'venue',
         status: 'active',
         verified: true,
+
+        // Basic Info
         name: "Hotel Select – Marriage & Banquet Hall",
         displayName: "Hotel Select Siwan",
         brand: "Hotel Select",
@@ -40,7 +42,7 @@ const vendors = [
         email: "hotelselect2020@gmail.com",
         website: "https://hotelselectsiwan.in",
 
-        // Features
+        // Capabilities (Mapped to features)
         features: JSON.stringify({
             event_types: [
                 "Wedding", "Reception", "Engagement", "Sangeet",
@@ -48,27 +50,34 @@ const vendors = [
             ],
             facilities: [
                 "Indoor Banquet Hall", "Decoration Support", "Lighting System",
-                "Sound System", "Parking", "Power Backup", "Professional Staff"
+                "Sound System", "Parking Facility", "Power Backup", "Professional Event Staff"
             ]
         }),
 
-        // Search
+        // Search Engine (Mapped to searchData)
         searchData: JSON.stringify({
-            keywords: [
-                "hotel select", "hotel select siwan", "marriage hall siwan",
-                "banquet hall siwan", "wedding hall siwan"
-            ],
-            aliases: ["Hotel Select Marriage Hall", "Select Banquet Hall"]
+            text_search: {
+                primary_keywords: [
+                    "hotel select", "hotel select siwan", "marriage hall siwan",
+                    "banquet hall siwan", "wedding hall siwan"
+                ],
+                aliases: ["Hotel Select Marriage Hall", "Select Banquet Hall"]
+            },
+            multilingual_search: {
+                hindi: ["सीवान मैरिज हॉल", "सीवान शादी हॉल", "होटल सेलेक्ट सीवान"],
+                hinglish: ["shaadi hall siwan", "marriage hall laxmi nagar"]
+            },
+            geo_search: { enabled: true, radius_km: [1, 2, 5, 10, 20] }
         }),
 
-        // Media
+        // Images
         coverImage: "https://hotelselectsiwan.in/images/a1.jpg",
         gallery: JSON.stringify([
             "https://hotelselectsiwan.in/images/1%20%2819%29.jpeg",
             "https://hotelselectsiwan.in/images/1%20%282%29.jpeg"
         ]),
 
-        priceRange: "₹2L - ₹5L", // Estimated based on location/type
+        priceRange: "₹2L - ₹5L",
         featured: true,
         badge: "Premium"
     },

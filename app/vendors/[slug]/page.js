@@ -3,19 +3,40 @@
 import { useParams, notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { vendors } from '@/data/vendors';
+import { useEffect, useState } from 'react';
+import AvailabilityCalendar from '@/components/AvailabilityCalendar';
 
 export default function VendorDetailsPage() {
   const params = useParams();
   const slug = params.slug;
+  const [vendor, setVendor] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Find vendor by ID or slug
-  const vendor = vendors.find(v =>
-    v.id === slug || v.name.toLowerCase().replace(/\s+/g, '-') === slug
-  );
+  useEffect(() => {
+    async function fetchVendor() {
+      try {
+        const res = await fetch(`/api/vendors/${slug}`);
+        if (!res.ok) {
+          if (res.status === 404) notFound();
+          throw new Error('Failed to fetch');
+        }
+        const data = await res.json();
+        setVendor(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchVendor();
+  }, [slug]);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
 
   if (!vendor) {
-    notFound();
+    return null; // notFound() will handle this
   }
 
   return (
@@ -36,7 +57,7 @@ export default function VendorDetailsPage() {
             {/* Main Image */}
             <div className="relative h-[400px] rounded-3xl overflow-hidden bg-slate-200">
               <Image
-                src={vendor.image}
+                src={vendor.coverImage || vendor.image}
                 alt={vendor.name}
                 fill
                 className="object-cover"
@@ -67,7 +88,7 @@ export default function VendorDetailsPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    {vendor.location}
+                    {vendor.fullAddress || vendor.location}
                   </p>
                 </div>
                 <div className="flex flex-col items-end">
@@ -77,7 +98,7 @@ export default function VendorDetailsPage() {
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   </div>
-                  <p className="text-sm text-slate-500 mt-1">{vendor.reviews} Reviews</p>
+                  <p className="text-sm text-slate-500 mt-1">{vendor.reviewsCount} Reviews</p>
                 </div>
               </div>
 
@@ -88,17 +109,73 @@ export default function VendorDetailsPage() {
                 </div>
                 <div>
                   <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Category</p>
-                  <p className="text-xl font-bold text-slate-900 dark:text-white">{vendor.category}</p>
+                  <p className="text-xl font-bold text-slate-900 dark:text-white">
+                    {Array.isArray(vendor.categories) ? vendor.categories.join(', ') : vendor.category}
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* About Section (Mock) */}
+            {/* About Section */}
             <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 shadow-sm border border-slate-100 dark:border-slate-800">
               <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">About {vendor.name}</h2>
               <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                {vendor.name} is a premier service provider in {vendor.location}, known for their exceptional quality and attention to detail. With years of experience in the wedding industry, they have helped countless couples create their dream wedding. They specialize in {vendor.category} services and are committed to making your special day unforgettable.
+                {vendor.description || `${vendor.name} is a premier service provider in ${vendor.city}, known for their exceptional quality and attention to detail.`}
               </p>
+
+              {/* Features List if available */}
+              {vendor.features?.facilities && (
+                <div className="mt-6">
+                  <h3 className="font-semibold mb-3">Facilities</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {vendor.features.facilities.map((facility, i) => (
+                      <span key={i} className="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-full text-sm">
+                        {facility}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Event Types */}
+              {vendor.features?.event_types && (
+                <div className="mt-6">
+                  <h3 className="font-semibold mb-3">Perfect For</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {vendor.features.event_types.map((type, i) => (
+                      <span key={i} className="px-3 py-1 border border-slate-200 dark:border-slate-700 rounded-full text-sm">
+                        {type}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Location Map Link */}
+              {vendor.googleMapsUrl && (
+                <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
+                  <h3 className="font-semibold mb-3">Location</h3>
+                  <a
+                    href={vendor.googleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-rose-600 hover:underline"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    View on Google Maps
+                  </a>
+                  <p className="text-sm text-slate-500 mt-1">{vendor.fullAddress}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Availability Section */}
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 shadow-sm border border-slate-100 dark:border-slate-800">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Check Availability</h2>
+              <AvailabilityCalendar vendorId={vendor.id} />
             </div>
           </div>
 
@@ -125,6 +202,13 @@ export default function VendorDetailsPage() {
               <p className="text-xs text-center text-slate-500 mt-4">
                 Typically responds within 24 hours
               </p>
+
+              {vendor.phonePrimary && (
+                <div className="mt-4 pt-4 border-t text-center">
+                  <p className="text-sm text-slate-500">Or call us at</p>
+                  <p className="font-bold text-lg">{vendor.phonePrimary}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
